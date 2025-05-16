@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request
 from logic.GamesLibrary import GamesLibrary
-from logic.VideoGame import VideoGame
 
 class WebUI:
     __all_games = None
@@ -14,7 +13,7 @@ class WebUI:
         },
         "Create":{
             "create_game": "Create a new game.",
-            "create_libraries": "Create a new library.",
+            "create_library": "Create a new library.",
             "join_libraries": "Join a library with another library."
         },
         "Update":{
@@ -29,45 +28,32 @@ class WebUI:
     }
 
     @classmethod
+    def get_app(cls):
+        return cls.__app
+
+    @classmethod
+    def get_all_libraries(cls):
+        return cls.__all_libraries
+
+    @classmethod
+    def get_all_games(cls):
+        return cls.__all_games
+
+    @classmethod
     def init(cls):
         cls.__all_games, cls.__all_libraries = GamesLibrary.read_data()
 
+    @staticmethod
     @__app.route('/')
     @__app.route('/index')
     @__app.route('/index.html')
     @__app.route('/index.php')
-    @staticmethod
     def homepage():
         return render_template("homepage.html", options=WebUI.MENU)
 
-    @__app.route('/print_libraries')
-    @staticmethod
-    def print_libraries():
-        return render_template("print/print_libraries.html", libraries=WebUI.__all_libraries)
-
-    @__app.route('/print_library')
-    @staticmethod
-    def print_library():
-        if "library" not in request.args:
-            return render_template(
-                "error.html",
-                message_header="Library not specified!",
-                message_body="No library specified. Please check the URL and try again."
-            )
-        key = request.args["library"]
-        library = GamesLibrary.lookup(key)
-        if library is None:
-            return render_template(
-                "error.html",
-                message_header="Library not found!",
-                message_body=f"The library named '{key}' was not found. Please check the URL and try again."
-            )
-        return render_template("print/print_library.html", library=library)
-
     @classmethod
     def run(cls):
-        cls.__app.run(port=8000)
+        from ui.PrintRoutes import PrintRoutes
+        from ui.CreateRoutes import CreateRoutes
 
-if __name__ == '__main__':
-    WebUI.init()
-    WebUI.run()
+        cls.__app.run(host="0.0.0.0", port=8000)

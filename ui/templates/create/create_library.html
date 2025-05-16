@@ -1,0 +1,13 @@
+{% extends "default.html" %}
+{%  block title %}Create New Library{% endblock %}
+{% block header %}Please enter the Game Library information:{% endblock %}
+{% block content %}
+    <form method="POST" action="do_create_library">
+    <table class="data_entry_form">
+        <tr><th><label>Name:</label></th><td><input type="text" name="name"></td></tr>
+        <tr><th><label>Icon/Image URL:</label></th><td><input type="text" name="icon"></td></tr>
+        <tr><th><label>Description:</label></th><td><input type="text" name="description"></td></tr>
+        <tr><th colspan ="2"><button type="submit">CREATE</button></th></tr>
+    </table>
+    </form>
+{% endblock %}
