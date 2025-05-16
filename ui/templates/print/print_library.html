@@ -1,0 +1,13 @@
+{% extends "default.html" %}
+{%  block title %}{{ library.get_name() }} Library{% endblock %}
+{% block header %}{{ library.get_name() }} Library{% endblock %}
+{% block content %}
+    <img src="{{ library.get_icon() }}">
+    <p>{{ library.get_description() }}</p>
+    <h2>Games in this library:</h2>
+    <ul>
+    {% for game in library %}
+    <li>{{ game }}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}

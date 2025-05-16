@@ -1,0 +1,10 @@
+{% extends "default.html" %}
+{% block title %}Print Libraries{% endblock %}
+{% block header %}All Libraries:{% endblock %}
+{% block content %}
+<ul>
+    {% for library in libraries %}
+        <li><a href="/print_library?library={{ library.get_key() }}">{{ library.get_name() }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
