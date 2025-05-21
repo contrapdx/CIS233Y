@@ -103,7 +103,7 @@ class ConsoleUI:
         description = v.input_string(prompt="Please enter a description for the library: ", valid=lambda x: True)
         library = GamesLibrary(name=name, games=[], icon=icon, description=description, save=True)
         cls.__all_libraries.append(library)
-        print(f"{name} created successfully.")
+        print(f"Library '{name}' created successfully.")
 
     @classmethod
     def delete_library(cls):

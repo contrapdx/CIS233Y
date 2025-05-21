@@ -1,0 +1,8 @@
+{% extends "default.html" %}
+{%  block title %}Library "{{ library.get_name() }}" Created{% endblock %}
+{% block header %}Library "{{ library.get_name() }}" Created{% endblock %}
+{% block content %}
+<p>Created a new library:</p>
+    <img src="{{ library.get_icon() }}">
+    <p>{{ library.get_description() }}</p>
+{% endblock %}

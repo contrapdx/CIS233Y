@@ -12,7 +12,8 @@ class WebUI:
             "print_libraries": "Print a list of all libraries."
         },
         "Create":{
-            "create_game": "Create a new game.",
+            "create_video_game": "Create a new video game.",
+            "create_fighting_game": "Create a new fighting game.",
             "create_library": "Create a new library.",
             "join_libraries": "Join a library with another library."
         },
@@ -42,6 +43,23 @@ class WebUI:
     @classmethod
     def init(cls):
         cls.__all_games, cls.__all_libraries = GamesLibrary.read_data()
+
+    @classmethod
+    def validate_field(cls, field_name):
+        if field_name not in request.form:
+            return None, render_template(
+                "error.html",
+                message_header="Field blank!",
+                message_body="Field cannot be left blank. Please check the form and try again."
+            )
+        field_name = request.form[field_name].strip()
+        if field_name == "":
+            return None, render_template(
+                "error.html",
+                message_header="Field blank!",
+                message_body="Field cannot be left blank. Please check the form and try again."
+            )
+        return field_name, None
 
     @staticmethod
     @__app.route('/')

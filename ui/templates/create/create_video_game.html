@@ -1,0 +1,15 @@
+{% extends "default.html" %}
+{%  block title %}Create New Video Game{% endblock %}
+{% block header %}Please enter the Video Game information:{% endblock %}
+{% block content %}
+    <form method="POST" action="do_create_video_game">
+    <table class="data_entry_form">
+        <tr><th><label>Title:</label></th><td><input type="text" name="title"></td></tr>
+        <tr><th><label>Release Year:</label></th><td><input type="text" name="release_year"></td></tr>
+        <tr><th><label>Developer:</label></th><td><input type="text" name="developer"></td></tr>
+        <tr><th><label>Genre:</label></th><td><input type="text" name="genre"></td></tr>
+        <tr><th><label>Series:</label></th><td><input type="text" name="series"></td></tr>
+        <tr><th colspan ="2"><button type="submit">CREATE</button></th></tr>
+    </table>
+    </form>
+{% endblock %}

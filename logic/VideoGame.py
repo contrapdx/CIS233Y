@@ -67,9 +67,6 @@ class VideoGame:
     def get_developer(self):
         return self.__developer
 
-    def get_platform(self):
-        return self.__platform
-
     def get_genre(self):
         return self.__genre
 

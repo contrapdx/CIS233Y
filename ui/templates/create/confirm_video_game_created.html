@@ -1,0 +1,12 @@
+{% extends "default.html" %}
+{%  block title %}Game "{{ game.get_title() }} ({{ game.get_release_year() }})" Created{% endblock %}
+{% block header %}Game "{{ game.get_title() }} ({{ game.get_release_year() }})" Created{% endblock %}
+{% block content %}
+<p>Created a new video game:</p>
+    <p>{{ game.get_title() }} ({{ game.get_release_year() }})</p>
+<ul>
+    <li>Developer: {{ game.get_developer() }}</li>
+    <li>Genre: {{ game.get_genre() }}</li>
+    <li>Series: {{ game.get_series() }}</li>
+</ul>
+{% endblock %}
