@@ -52,14 +52,14 @@ class WebUI:
                 message_header="Field blank!",
                 message_body="Field cannot be left blank. Please check the form and try again."
             )
-        field_name = request.form[field_name].strip()
-        if field_name == "":
+        field_value = request.form[field_name].strip()
+        if field_value == "":
             return None, render_template(
                 "error.html",
                 message_header="Field blank!",
                 message_body="Field cannot be left blank. Please check the form and try again."
             )
-        return field_name, None
+        return field_value, None
 
     @staticmethod
     @__app.route('/')
