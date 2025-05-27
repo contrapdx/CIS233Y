@@ -54,6 +54,9 @@ class VideoGame:
     def get_key(self):
         return f"{self.__title} ({self.__release_year})".lower()
 
+    def get_printable_key(self):
+        return f"{self.__title} ({self.__release_year})"
+
     @staticmethod
     def make_key(title, release_year):
         return f"{title} ({release_year})".lower()

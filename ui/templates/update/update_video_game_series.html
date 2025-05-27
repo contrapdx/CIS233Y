@@ -1,0 +1,15 @@
+{% extends "default.html" %}
+{% block title %}Select a Game and Update the Series{% endblock %}
+{% block header %}Select a Video Game and update its series:{% endblock %}
+{% block content %}
+    <form method="POST" action="do_update_video_game_series">
+    <table class="data_entry_form">
+        <tr><th><label>Video Game:</label></th><td>
+            {% set select_name = "game" %}
+            {% include "select_video_game.html" %}
+        </td></tr>
+        <tr><th><label>Series:</label></th><td><input type="text" name="series"></td></tr>
+        <tr><th colspan="2"><button type="submit">UPDATE</button></th></tr>
+    </table>
+    </form>
+{% endblock %}

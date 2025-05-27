@@ -1,0 +1,5 @@
+<select name="{{ select_name }}">
+    {% for library in libraries %}
+    <option value="{{ library.get_key() }}">{{ library.get_name() }}</option>
+    {% endfor %}
+</select>

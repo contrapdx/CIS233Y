@@ -1,0 +1,6 @@
+{% extends "default.html" %}
+{%  block title %}Game "{{ game.get_printable_key() }}" Removed from Library{% endblock %}
+{% block header %}Game Removed from Library{% endblock %}
+{% block content %}
+<p>The game "{{ game.get_printable_key() }} was removed from the "{{ library.get_name() }}" library.</p>
+{% endblock %}

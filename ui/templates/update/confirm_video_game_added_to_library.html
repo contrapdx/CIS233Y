@@ -1,0 +1,6 @@
+{% extends "default.html" %}
+{%  block title %}Game "{{ game.get_printable_key() }}" Added to Library{% endblock %}
+{% block header %}Game Added to Library{% endblock %}
+{% block content %}
+<p>The game "{{ game.get_printable_key() }} was added to the "{{ library.get_name() }}" library.</p>
+{% endblock %}

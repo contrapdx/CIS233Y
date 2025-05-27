@@ -1,0 +1,14 @@
+{% extends "default.html" %}
+{%  block title %}Game "{{ game.get_title() }} ({{ game.get_shorthand() }})" Created{% endblock %}
+{% block header %}Game "{{ game.get_title() }} ({{ game.get_shorthand() }})" Created{% endblock %}
+{% block content %}
+<p>Created a new fighting game:</p>
+    <p>{{ game.get_title() }} ({{ game.get_shorthand() }})</p>
+<ul>
+    <li>Subgenre: {{ game.get_subgenre() }}</li>
+    <li>Developer: {{ game.get_developer() }}</li>
+    <li>Release Year: {{ game.get_release_year() }}</li>
+    <li>Series: {{ game.get_series() }}</li>
+    <li>EVO Appearances: {{ game.get_evo_appearances() }}</li>
+</ul>
+{% endblock %}

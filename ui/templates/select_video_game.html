@@ -1,0 +1,5 @@
+<select name="{{ select_name }}">
+    {% for game in games %}
+    <option value="{{ game.get_key() }}">{{ game.get_printable_key() }}</option>
+    {% endfor %}
+</select>

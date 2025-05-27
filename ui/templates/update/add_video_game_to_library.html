@@ -1,0 +1,18 @@
+{% extends "default.html" %}
+{% block title %}Add a game to a library{% endblock %}
+{% block header %}Select a video game and add it to a library:{% endblock %}
+{% block content %}
+    <form method="POST" action="do_add_video_game_to_library">
+    <table class="data_entry_form">
+        <tr><th><label>Video Game:</label></th><td>
+            {% set select_name = "game" %}
+            {% include "select_video_game.html" %}
+        </td></tr>
+        <tr><th><label>Library:</label></th><td>
+            {% set select_name = "library" %}
+            {% include "select_library.html" %}
+        </td></tr>
+        <tr><th colspan="2"><button type="submit">ADD</button></th></tr>
+    </table>
+    </form>
+{% endblock %}

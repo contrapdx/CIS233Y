@@ -1,0 +1,17 @@
+{% extends "default.html" %}
+{%  block title %}Create New Fighting Game{% endblock %}
+{% block header %}Please enter the Fighting Game information:{% endblock %}
+{% block content %}
+    <form method="POST" action="do_create_fighting_game">
+    <table class="data_entry_form">
+        <tr><th><label>Title:</label></th><td><input type="text" name="title"></td></tr>
+        <tr><th><label>Shorthand:</label></th><td><input type="text" name="shorthand"></td></tr>
+        <tr><th><label>Subgenre:</label></th><td><input type="text" name="subgenre"></td></tr>
+        <tr><th><label>Release Year:</label></th><td><input type="text" name="release_year"></td></tr>
+        <tr><th><label>Developer:</label></th><td><input type="text" name="developer"></td></tr>
+        <tr><th><label>Series:</label></th><td><input type="text" name="series"></td></tr>
+        <tr><th><label>EVO Appearances:</label></th><td><input type="text" name="evo_appearances"></td></tr>
+        <tr><th colspan ="2"><button type="submit">CREATE</button></th></tr>
+    </table>
+    </form>
+{% endblock %}

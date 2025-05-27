@@ -1,0 +1,14 @@
+{% extends "default.html" %}
+{% block title %}Select a Library and Show its Contents{% endblock %}
+{% block header %}Select a library to show its contents:{% endblock %}
+{% block content %}
+    <form method="POST" action="do_delete_library">
+    <table class="data_entry_form">
+        <tr><th><label>Library:</label></th><td>
+            {% set select_name = "library" %}
+            {% include "select_library.html" %}
+        </td></tr>
+        <tr><th colspan="2"><button type="submit">DELETE</button></th></tr>
+    </table>
+    </form>
+{% endblock %}

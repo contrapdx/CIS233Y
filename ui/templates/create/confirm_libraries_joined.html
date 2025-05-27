@@ -1,0 +1,14 @@
+{% extends "default.html" %}
+{%  block title %}Library "{{ new_library.get_name() }}" Created{% endblock %}
+{% block header %}Library "{{ new_library.get_name() }}" Created{% endblock %}
+{% block content %}
+<p>The existing libraries {{ first_library.get_name() }} and {{ first_library.get_name() }}
+    were successfully joined together to form {{ new_library.get_name() }}.</p>
+<p>{{ new_library.get_description() }}</p>
+<h2>Games:</h2>
+<ul>
+    {% for game in new_library %}
+    <li>{{ game }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

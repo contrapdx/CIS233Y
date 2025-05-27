@@ -1,0 +1,7 @@
+{% extends "default.html" %}
+{%  block title %}Series Updated{% endblock %}
+{% block header %}{{ game.get_printable_key() }} Updated{% endblock %}
+{% block content %}
+<p>The new video game information is:</p>
+{{ game }}
+{% endblock %}

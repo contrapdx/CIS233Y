@@ -28,3 +28,10 @@ class PrintRoutes:
                 message_body=f"The library named '{key}' was not found. Please check the URL and try again."
             )
         return render_template("print/print_library.html", library=library)
+
+    @staticmethod
+    @__app.route('/show_library_contents')
+    def show_library_contents():
+        return render_template(
+            "print/show_library_contents.html",
+            libraries=WebUI.get_all_libraries())

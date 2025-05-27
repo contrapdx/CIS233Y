@@ -25,6 +25,9 @@ class FightingGame(VideoGame):
     def get_key(self):
         return f"{VideoGame.get_title(self)} ({self.__shorthand})".lower()
 
+    def get_printable_key(self):
+        return f"{VideoGame.get_title(self)} ({self.__shorthand})"
+
     @staticmethod
     def make_key(title, shorthand):
         return f"{title} ({shorthand})".lower()

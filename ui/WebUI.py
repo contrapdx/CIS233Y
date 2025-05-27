@@ -9,7 +9,8 @@ class WebUI:
     MENU = {
         "Print":{
             "print_library?library=All%20Games": "Print a list of all games.",
-            "print_libraries": "Print a list of all libraries."
+            "print_libraries": "Print a list of all libraries.",
+            "show_library_contents": "Select a library and show its contents."
         },
         "Create":{
             "create_video_game": "Create a new video game.",
@@ -18,12 +19,12 @@ class WebUI:
             "join_libraries": "Join a library with another library."
         },
         "Update":{
-            "update_game_series": "Update a game's series.",
-            "add_game_to_library": "Add a game to a library.",
-            "remove_game_from_library": "Remove a game from a library."
+            "update_video_game_series": "Update a game's series.",
+            "add_video_game_to_library": "Add a game to a library.",
+            "remove_video_game_from_library": "Remove a game from a library."
         },
         "Delete":{
-            "delete_game": "Delete a game.",
+            "delete_video_game": "Delete a game.",
             "delete_library": "Delete a library."
         }
     }
@@ -45,19 +46,19 @@ class WebUI:
         cls.__all_games, cls.__all_libraries = GamesLibrary.read_data()
 
     @classmethod
-    def validate_field(cls, field_name):
+    def validate_field(cls, object_name, field_name):
         if field_name not in request.form:
             return None, render_template(
                 "error.html",
-                message_header="Field blank!",
-                message_body="Field cannot be left blank. Please check the form and try again."
+                message_header=f"{object_name} {field_name} not specified!",
+                message_body=f"No {object_name} {field_name} specified. Please check the form and try again."
             )
         field_value = request.form[field_name].strip()
         if field_value == "":
             return None, render_template(
                 "error.html",
-                message_header="Field blank!",
-                message_body="Field cannot be left blank. Please check the form and try again."
+                message_header=f"{object_name} {field_name} not specified!",
+                message_body=f"{object_name} {field_name} not specified. Please check the form and try again."
             )
         return field_value, None
 
@@ -73,5 +74,7 @@ class WebUI:
     def run(cls):
         from ui.PrintRoutes import PrintRoutes
         from ui.CreateRoutes import CreateRoutes
+        from ui.UpdateRoutes import UpdateRoutes
+        from ui.DeleteRoutes import DeleteRoutes
 
         cls.__app.run(host="0.0.0.0", port=8000)
