@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, redirect, url_for
 from flask_session import Session
 from logic.GamesLibrary import GamesLibrary
 import os
@@ -8,7 +8,11 @@ class WebUI:
     __all_games = None
     __all_libraries = None
     __app = Flask(__name__)
-
+    ALLOWED_PATHS = [
+        "/login",
+        "/do_login",
+        "/static/gamebox.css"
+    ]
     MENU = {
         "Print":{
             "print_library?library=All%20Games": "Print a list of all games.",
@@ -66,10 +70,17 @@ class WebUI:
         return field_value, None
 
     @staticmethod
-    @__app.route('/')
+    @__app.before_request
+    def before_request():
+        if "user" not in session:
+            if request.path not in WebUI.ALLOWED_PATHS:
+                return redirect(url_for("login"))
+
+    @staticmethod
     @__app.route('/index')
     @__app.route('/index.html')
     @__app.route('/index.php')
+    @__app.route('/')
     def homepage():
         return render_template("homepage.html", options=WebUI.MENU)
 

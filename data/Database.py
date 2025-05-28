@@ -3,6 +3,7 @@ from pymongo.server_api import ServerApi
 from logic.GamesLibrary import GamesLibrary
 from logic.VideoGame import VideoGame
 from logic.FightingGame import FightingGame
+from logic.User import User
 from configparser import ConfigParser
 import os
 
@@ -11,6 +12,7 @@ class Database:
     __database = None
     __games_collection = None
     __libraries_collection = None
+    __users_collection = None
     APP_NAME = "game_box"
 
     @classmethod
@@ -34,6 +36,7 @@ class Database:
             cls.__database = cls.__connection.GameBox
             cls.__games_collection = cls.__database.Games
             cls.__libraries_collection = cls.__database.Libraries
+            cls.__users_collection = cls.__database.Users
             print("Connection successful")
 
     @classmethod
@@ -45,7 +48,15 @@ class Database:
         cls.__games_collection = cls.__database.Games
         cls.__libraries_collection.drop()
         cls.__libraries_collection = cls.__database.Libraries
+        cls.__users_collection.drop()
+        cls.__users_collection = cls.__database.Users
 
+        user1 = User("Connor", b'$2b$13$nlDAygkYnq5WdN.Rab/mFe.ylOu8xgfwPwoaEdB.q4EEuU4VL35tW')
+        user2 = User("Not Connor", b'$2b$13$P981uErsdmK1wlsksPRj7OHpSY4aVjzu6hlJX0YpL94r1nckj314G')
+
+        user_dicts = [user.to_dict() for user in [user1, user2]]
+
+        cls.__users_collection.insert_many(user_dicts)
         all_games, all_libraries = cls.get_data()
 
         game_dicts = [game.to_dict() for game in all_games]
@@ -63,6 +74,14 @@ class Database:
         libraries = [GamesLibrary.build(library_dict) for library_dict in library_dicts]
 
         return GamesLibrary.lookup(GamesLibrary.ALL_GAMES), libraries
+
+    @classmethod
+    def read_user(cls, username):
+        user_dict = cls.__users_collection.find_one({"_id": username.lower()})
+        if user_dict is None:
+            return None
+        else:
+            return User.build(user_dict)
 
     @classmethod
     def get_data(cls):
@@ -143,3 +162,4 @@ class Database:
 
 if __name__ == '__main__':
     Database.connect()
+    print(Database.read_user("Test"))
