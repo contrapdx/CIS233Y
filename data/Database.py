@@ -27,7 +27,9 @@ class Database:
             username = config_parser["Database"]["username"]
             password = config_parser["Database"]["password"]
             cluster = config_parser["Database"]["cluster"]
+
             uri = f"mongodb+srv://{username}:{password}@{cluster}/?retryWrites=true&w=majority&appName=Cluster0"
+
             cls.__connection = MongoClient(uri, server_api=ServerApi('1'))
             cls.__database = cls.__connection.GameBox
             cls.__games_collection = cls.__database.Games

@@ -1,5 +1,8 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
+from flask_session import Session
 from logic.GamesLibrary import GamesLibrary
+import os
+import bcrypt
 
 class WebUI:
     __all_games = None
@@ -76,5 +79,17 @@ class WebUI:
         from ui.CreateRoutes import CreateRoutes
         from ui.UpdateRoutes import UpdateRoutes
         from ui.DeleteRoutes import DeleteRoutes
+        from ui.UserRoutes import UserRoutes
 
-        cls.__app.run(host="0.0.0.0", port=8000)
+        if "APPDATA" in os.environ:
+            path = os.environ["APPDATA"]
+        elif "HOME" in os.environ:
+            path = os.environ["HOME"]
+        else:
+            raise Exception("Couldn't find config folder.")
+
+        cls.__app.secret_key = bcrypt.gensalt()
+        cls.__app.config["SESSION_TYPE"] = "filesystem"
+        Session(cls.__app)
+
+        cls.__app.run(host="0.0.0.0", port=8443, ssl_context=(path + "/game_box/cert.pem", path + "/game_box/key.pem"))
