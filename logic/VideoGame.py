@@ -2,23 +2,23 @@ class VideoGame:
     __title = ""
     __release_year = 0
     __developer = ""
-    __platform = ""
     __genre = ""
     __series = ""
-    __map = {}
+    __user_key = ""
 
-    def __init__(self, title, release_year, developer, genre, series, save=False):
+    def __init__(self, title, release_year, developer, genre, series, user_key, game_map, save=False):
         self.__title = title
         self.__release_year = release_year
         self.__developer = developer
         self.__genre = genre
         self.__series = series
-        self.__class__.__map[self.get_key()] = self
+        self.__user_key = user_key
+        game_map[self.get_key()] = self
         if save:
             self.save()
 
     @classmethod
-    def build(cls, game_dict):
+    def build(cls, game_dict, game_map):
         from logic.FightingGame import FightingGame
         if game_dict["type"] == "Video Game":
             return VideoGame(
@@ -26,7 +26,9 @@ class VideoGame:
                 game_dict["release_year"],
                 game_dict["developer"],
                 game_dict["genre"],
-                game_dict["series"]
+                game_dict["series"],
+                game_dict["user_key"],
+                game_map
             )
         elif game_dict["type"] == "Fighting Game":
             return FightingGame(
@@ -35,6 +37,8 @@ class VideoGame:
                 game_dict["developer"],
                 game_dict["genre"],
                 game_dict["series"],
+                game_dict["user_key"],
+                game_map,
                 game_dict["subgenre"],
                 game_dict["shorthand"],
                 game_dict["evo_appearances"]
@@ -42,13 +46,14 @@ class VideoGame:
 
     def to_dict(self):
         return {
-            "_id": self.get_key(),
+            "_id": f"{self.get_key()}|{self.__user_key}",
             "type": "Video Game",
             "title": self.__title,
             "release_year": self.__release_year,
             "developer": self.__developer,
             "genre": self.__genre,
-            "series": self.__series
+            "series": self.__series,
+            "user_key": self.__user_key
         }
 
     def get_key(self):
@@ -56,6 +61,9 @@ class VideoGame:
 
     def get_printable_key(self):
         return f"{self.__title} ({self.__release_year})"
+
+    def get_id(self):
+        return f"{self.get_key()}|{self.__user_key}"
 
     @staticmethod
     def make_key(title, release_year):
@@ -80,26 +88,20 @@ class VideoGame:
         self.__series = series
         self.save()
 
-    @classmethod
-    def lookup(cls, key):
-        if key in cls.__map:
-            return cls.__map[key]
-        else:
-            return None
-
     def delete(self):
         from data.Database import Database
-        del self.__class__.__map[self.get_key()]
+        from logic.UserState import UserState
+
+        game_key = self.get_key()
+        user_state = UserState.lookup(self.__user_key)
+        game_map = user_state.get_game_map()
+        if game_key in game_map:
+            del game_map[game_key]
         Database.delete_game(self)
 
     def __str__(self):
         return (f"{self.__title} ({self.__release_year}). "
                 f"{self.__genre} developed by {self.__developer}. ")
-
-    @staticmethod
-    def get_video_games():
-        from data.Database import Database
-        return Database.get_data()
 
     def save(self):
         from data.Database import Database

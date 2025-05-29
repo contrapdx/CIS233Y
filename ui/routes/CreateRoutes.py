@@ -19,7 +19,7 @@ class CreateRoutes(WebUI):
         if name is None:
             return error
         key = name.lower()
-        library = GamesLibrary.lookup(key)
+        library = WebUI.lookup_library(key)
         if library is not None:
             return render_template(
                 "error.html",
@@ -34,7 +34,8 @@ class CreateRoutes(WebUI):
             description = request.form["description"].strip()
         else:
             description = ""
-        library = GamesLibrary(name=name, games=[], icon=icon, description=description, save=True)
+        library = GamesLibrary(name=name, games=[], icon=icon, description=description,
+                               user_key=WebUI.get_user_key(), library_map=WebUI.get_library_map(), save=True)
         WebUI.get_all_libraries().append(library)
         return render_template("create/confirm_library_created.html", library=library)
 
@@ -46,7 +47,6 @@ class CreateRoutes(WebUI):
     @staticmethod
     @__app.route('/do_create_video_game', methods=['GET', 'POST'])
     def do_create_video_game():
-        # title, release_year, developer, genre, series
         title, error = WebUI.validate_field(object_name="video game", field_name="title")
         if title is None:
             return error
@@ -54,7 +54,7 @@ class CreateRoutes(WebUI):
         if release_year is None:
             return error
         key = VideoGame.make_key(title, release_year).lower()
-        game = VideoGame.lookup(key)
+        game = WebUI.lookup_game(key)
         if game is not None:
             return render_template(
                 "error.html",
@@ -71,7 +71,9 @@ class CreateRoutes(WebUI):
             series = request.form["series"].strip()
         else:
             series = ""
-        game = VideoGame(title, release_year, developer, genre, series, save=True)
+        game = VideoGame(title=title, release_year=release_year,
+                         developer=developer, genre=genre, series=series,
+                         user_key=WebUI.get_user_key(), game_map=WebUI.get_game_map(), save=True)
         WebUI.get_all_games().append(game)
         return render_template("create/confirm_video_game_created.html", game=game)
 
@@ -89,7 +91,7 @@ class CreateRoutes(WebUI):
             return error
         shorthand, error = WebUI.validate_field(object_name="fighting game", field_name="shorthand")
         key = FightingGame.make_key(title, shorthand).lower()
-        game = FightingGame.lookup(key)
+        game = WebUI.lookup_game(key)
         if game is not None:
             return render_template(
                 "error.html",
@@ -114,8 +116,8 @@ class CreateRoutes(WebUI):
         else:
             series = ""
         game = FightingGame(title=title, shorthand=shorthand, release_year=release_year, developer=developer,
-                            subgenre=subgenre, evo_appearances=evo_appearances, series=series,
-                            genre="fighting game", save=True)
+                            subgenre=subgenre, evo_appearances=evo_appearances, series=series, genre="fighting game",
+                            user_key=WebUI.get_user_key(), game_map=WebUI.get_game_map(), save=True)
         WebUI.get_all_games().append(game)
         return render_template("create/confirm_fighting_game_created.html", game=game)
 
@@ -133,7 +135,7 @@ class CreateRoutes(WebUI):
         second_key, error = WebUI.validate_field(object_name="second library", field_name="second_library")
         if second_key is None:
             return error
-        first_library = GamesLibrary.lookup(first_key.lower())
+        first_library = WebUI.lookup_library(first_key.lower())
         if first_library is None:
             return render_template(
                 "error.html",
@@ -141,7 +143,7 @@ class CreateRoutes(WebUI):
                 message_body=f"The first library {first_key} does not exist. "
                              f"Please choose another library and try again."
             )
-        second_library = GamesLibrary.lookup(second_key.lower())
+        second_library = WebUI.lookup_library(second_key.lower())
         if second_library is None:
             return render_template(
                 "error.html",
@@ -150,7 +152,7 @@ class CreateRoutes(WebUI):
                              f"Please choose another library and try again."
             )
         new_key = f"{first_library.get_name()} / {second_library.get_name()}"
-        new_library =  GamesLibrary.lookup(new_key.lower())
+        new_library =  WebUI.lookup_library(new_key.lower())
         if new_library is not None:
             return render_template(
                 "error.html",

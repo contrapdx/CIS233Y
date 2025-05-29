@@ -20,7 +20,7 @@ class DeleteRoutes:
         game_key, error = WebUI.validate_field(object_name="video game", field_name="game")
         if game_key is None:
             return error
-        game = VideoGame.lookup(game_key)
+        game = WebUI.lookup_game(game_key)
         if game is None:
             return render_template(
                 "error.html",
@@ -48,7 +48,7 @@ class DeleteRoutes:
         library_key, error = WebUI.validate_field(object_name="library", field_name="library")
         if library_key is None:
             return error
-        library = GamesLibrary.lookup(library_key.lower())
+        library = WebUI.lookup_library(library_key.lower())
         if library.get_name() == GamesLibrary.ALL_GAMES:
             return render_template(
                 "error.html",

@@ -3,40 +3,52 @@ class GamesLibrary:
     __games = []
     __icon = ""
     __description = ""
-    __map = {}
+    __user_key = ""
 
     ALL_GAMES = "All Games"
 
-    def __init__(self, name, games, icon, description, save=False):
+    def __init__(self, name, games, icon, description, user_key, library_map, save=False):
         self.__name = name
         self.__games = games
         self.__icon = icon
         self.__description = description
-        self.__class__.__map[self.get_key()] = self
+        self.__user_key = user_key
+        library_map[self.get_key()] = self
         if save:
             self.save()
 
     @classmethod
-    def build(cls, library_dict):
+    def build(cls, library_dict, library_map, game_map):
         from logic.VideoGame import VideoGame
+
         return GamesLibrary(
             library_dict["name"],
-            [VideoGame.lookup(key) for key in library_dict["games"]],
+            [game_map[key] for key in library_dict["games"]],
             library_dict["icon"],
-            library_dict["description"]
+            library_dict["description"],
+            library_dict["user_key"],
+            library_map
         )
 
     def to_dict(self):
         return {
-            "_id": self.get_key(),
+            "_id": self.get_id(),
             "name": self.__name,
             "icon": self.__icon,
             "description": self.__description,
+            "user_key": self.__user_key,
             "games": [game.get_key() for game in self.__games]
         }
 
     def get_key(self):
         return self.__name.lower()
+
+    def get_id(self):
+        return f"{self.get_key()}|{self.__user_key}"
+
+    @staticmethod
+    def make_key(name):
+        return name.lower()
 
     def get_name(self):
         return self.__name
@@ -46,14 +58,6 @@ class GamesLibrary:
 
     def get_icon(self):
         return self.__icon
-
-    @classmethod
-    def lookup(cls, key):
-        lower_key = key.lower()
-        if lower_key in cls.__map:
-            return cls.__map[lower_key]
-        else:
-            return None
 
     def append(self, game, save=True):
         from data.Database import Database
@@ -68,7 +72,13 @@ class GamesLibrary:
 
     def delete(self):
         from data.Database import Database
-        del self.__class__.__map[self.get_key()]
+        from logic.UserState import UserState
+
+        library_key = self.get_key()
+        user_state = UserState.lookup(self.__user_key)
+        library_map = user_state.get_library_map()
+        if library_key in library_map:
+            del library_map[library_key]
         Database.delete_library(self)
 
     def __iter__(self):
@@ -78,10 +88,14 @@ class GamesLibrary:
         return game in self.__games
 
     def __add__(self, other):
+        from logic.UserState import UserState
         name = f"{self.get_name()} / {other.get_name()}"
         icon = f"{self.get_icon()} / {other.get_icon()}"
         description = self.get_description() + ", and " + other.get_description()
-        new_library = GamesLibrary(name, [], icon, description, save=True)
+        user_key = self.__user_key
+        user_state = UserState.lookup(user_key)
+        new_library = GamesLibrary(name, [], icon, description,
+                                   user_key, user_state.get_library_map(), save=True)
         for game in self:
             if game not in new_library:
                 new_library.append(game, save=False)

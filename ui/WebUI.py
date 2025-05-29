@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_session import Session
 from logic.GamesLibrary import GamesLibrary
+from logic.UserState import UserState
 import os
 import bcrypt
 
@@ -41,16 +42,66 @@ class WebUI:
         return cls.__app
 
     @classmethod
+    def get_user(cls):
+        if "user" in session:
+            return session["user"]
+        return None
+
+    @classmethod
+    def get_user_key(cls):
+        user = cls.get_user()
+        if user is None:
+            return None
+        return user.get_key()
+
+    @classmethod
     def get_all_libraries(cls):
-        return cls.__all_libraries
+        user_state = UserState.lookup(cls.get_user_key())
+        if user_state is not None:
+            return user_state.get_all_libraries()
+        return None
 
     @classmethod
     def get_all_games(cls):
-        return cls.__all_games
+        user_state = UserState.lookup(cls.get_user_key())
+        if user_state is not None:
+            return user_state.get_all_games()
+        return
 
     @classmethod
-    def init(cls):
-        cls.__all_games, cls.__all_libraries = GamesLibrary.read_data()
+    def get_library_map(cls):
+        user_state = UserState.lookup(cls.get_user_key())
+        if user_state is not None:
+            return user_state.get_library_map()
+        return
+
+    @classmethod
+    def get_game_map(cls):
+        user_state = UserState.lookup(cls.get_user_key())
+        if user_state is not None:
+            return user_state.get_game_map()
+        return
+
+    @classmethod
+    def login(cls, user):
+        session["user"] = user
+        UserState(user)
+
+    @classmethod
+    def logout(cls):
+        UserState.logout(WebUI.get_user_key())
+
+    @classmethod
+    def lookup_library(cls, key):
+        user_state = UserState.lookup(cls.get_user_key())
+        if user_state is not None:
+            return user_state.lookup_library(key)
+
+    @classmethod
+    def lookup_game(cls, key):
+        user_state = UserState.lookup(cls.get_user_key())
+        if user_state is not None:
+            return user_state.lookup_game(key)
 
     @classmethod
     def validate_field(cls, object_name, field_name):
@@ -75,6 +126,10 @@ class WebUI:
         if "user" not in session:
             if request.path not in WebUI.ALLOWED_PATHS:
                 return redirect(url_for("login"))
+            return
+        user_state = UserState.lookup(WebUI.get_user_key())
+        if user_state is None:
+            UserState(WebUI.get_user())
 
     @staticmethod
     @__app.route('/index')
@@ -86,11 +141,11 @@ class WebUI:
 
     @classmethod
     def run(cls):
-        from ui.PrintRoutes import PrintRoutes
-        from ui.CreateRoutes import CreateRoutes
-        from ui.UpdateRoutes import UpdateRoutes
-        from ui.DeleteRoutes import DeleteRoutes
-        from ui.UserRoutes import UserRoutes
+        from ui.routes.PrintRoutes import PrintRoutes
+        from ui.routes.CreateRoutes import CreateRoutes
+        from ui.routes.UpdateRoutes import UpdateRoutes
+        from ui.routes.DeleteRoutes import DeleteRoutes
+        from ui.routes.UserRoutes import UserRoutes
 
         if "APPDATA" in os.environ:
             path = os.environ["APPDATA"]
@@ -102,5 +157,5 @@ class WebUI:
         cls.__app.secret_key = bcrypt.gensalt()
         cls.__app.config["SESSION_TYPE"] = "filesystem"
         Session(cls.__app)
-
+        print("Web server launched successfully")
         cls.__app.run(host="0.0.0.0", port=8443, ssl_context=(path + "/game_box/cert.pem", path + "/game_box/key.pem"))

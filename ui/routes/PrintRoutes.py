@@ -19,8 +19,9 @@ class PrintRoutes:
                 message_header="Library not specified!",
                 message_body="No library specified. Please check the URL and try again."
             )
-        key = request.args["library"]
-        library = GamesLibrary.lookup(key)
+        name = request.args["library"]
+        key = GamesLibrary.make_key(name)
+        library = WebUI.lookup_library(key)
         if library is None:
             return render_template(
                 "error.html",
